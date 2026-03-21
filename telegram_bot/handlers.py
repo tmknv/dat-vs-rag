@@ -3,6 +3,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
 from SQL_DB.users import add_user
+from response_generate.generation import get_responses 
 
 router = Router()
 
@@ -14,4 +15,4 @@ async def command_start(msg: Message):
 
 @router.message(F.text)
 async def generate_answer(msg: Message):
-    await msg.answer("This query will be responsed")
+    await msg.answer(get_responses(msg.text))
