@@ -3,11 +3,19 @@ from aiogram import Bot, Dispatcher
 
 from config import TOKEN
 from handlers import router
+from SQL_DB.connect import connect_DB
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 async def main():
+    try:
+        connect_DB()
+        print("Database connected!")
+    except:
+        print("Database connection error!")
+        return
+
     dp.include_router(router)
    
     print("bot started!")
