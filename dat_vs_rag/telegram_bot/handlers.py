@@ -2,8 +2,8 @@ from aiogram import F, Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
-from SQL_DB.users import add_user
-from response_generate.generation import get_responses 
+from dat_vs_rag.SQL_DB.users import add_user
+from dat_vs_rag.response_generate.generation import get_responses 
 
 router = Router()
 

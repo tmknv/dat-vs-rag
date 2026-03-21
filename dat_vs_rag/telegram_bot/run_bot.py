@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher
 
 from config import TOKEN
 from handlers import router
-from SQL_DB.connect import connect_DB
+from dat_vs_rag.SQL_DB.connect import connect_DB
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
