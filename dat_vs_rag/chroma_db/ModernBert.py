@@ -1,8 +1,15 @@
 from sentence_transformers import SentenceTransformer
 
+
+'''глобальная модель берта, чтобы при каждом запросе не подгружать'''
 BERT = None
 
-def generate_embeddings(documents):
+def generate_embeddings(documents: list[str]) ->list[list[int]]:
+    
+    '''
+    инициализирует модель берт и создает эмбединги для документов
+    '''
+
     global BERT
 
     BERT = SentenceTransformer("nickprock/ModernBERT-base-sts")
@@ -15,7 +22,12 @@ def generate_embeddings(documents):
     return doc_embeddings
 
 
-def generate_query_embedding(query: str):
+def generate_query_embedding(query: str) ->list[int]:
+
+    '''
+    создает эмбединги для запросов
+    '''
+
     return BERT.encode(
         [query],
         normalize_embeddings=True 

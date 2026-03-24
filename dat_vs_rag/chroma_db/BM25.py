@@ -8,14 +8,32 @@ documents = [
     "man eat apple"
 ]
 
+
+
+'''Глобальная обученая модель bm25'''
 BM25 = None
 
-def generate_query_sparse_vector(query: str):    
+def generate_query_sparse_vector(query: str) ->list[int]:
+
+    '''
+    генерирует разреженый вектор для запроса
+    структура вектора: первая половина - индексы, вторая половина - веса
+    '''
+
     vector = BM25.encode_queries([query])
     
-    return vector
+    return vector["indices"] + vector["values"]
 
-def genetate_sparse_vectors(documents) -> dict:
+
+
+def genetate_sparse_vectors(documents: list[str]) -> dict:
+
+
+    '''
+    генерирует разреженые вектора для документов
+    структура вектора: первая половина - индексы, вторая половина - веса
+    '''
+
     sparse_vectors = []
     
     for document in documents:
@@ -25,7 +43,14 @@ def genetate_sparse_vectors(documents) -> dict:
     return sparse_vectors
 
 
+
+
 def train_bm25():
+
+    '''
+    тренирует bm25 на документах
+    '''
+
     global BM25
 
     if os.path.exists("./dat_vs_rag/chroma_db/data/bm25_param.json"):

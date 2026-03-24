@@ -7,6 +7,12 @@ from create_chunks import get_chunks_with_embedding, get_dataset
 
 def init_chroma_db():
 
+    '''
+    инициализирует chroma db:    
+    создает клиент и две коллекции - для лексического и семантического поисков
+    '''
+
+
     #проверка на наличие бд. если есть - выходим из функции
     if os.path.exists("./dat_vs_rag/chroma_db/data/chroma.sqlite3"):
         return

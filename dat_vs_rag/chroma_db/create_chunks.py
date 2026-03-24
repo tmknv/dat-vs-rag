@@ -3,17 +3,32 @@ from ModernBert import generate_embeddings
 
 
 
-def get_dataset():
+def get_dataset() ->list[str]:
+    
+    '''
+    Возвращает список названий файлов датасета
+    '''
+
     return [""]
 
-def get_chunks(filename: str):
-    return [
-    "cat eat mouse",
-    "dog play cat",
-    "man eat apple"
-]
+def get_chunks(filename: str) ->list[str]:
 
-def get_chunks_with_embedding(filename: str) ->dict: #dict{"chunks", "dense_embeddings", "sparse_vectors"}
+    '''
+    Разбивает текст одного файла на чанки
+    '''
+
+    return [
+        "cat eat mouse",
+        "dog play cat",
+        "man eat apple"
+    ]   
+
+def get_chunks_with_embedding(filename: str) ->dict: #dict{"chunks", "sparse_vectors", "embeddings"}
+
+    '''
+    возвращает чанки файла в виде словаря со структурой: [чанки, их разряженые вектора, их эмбеддинги]
+    '''
+
     train_bm25()
 
     documents = get_chunks(filename)
