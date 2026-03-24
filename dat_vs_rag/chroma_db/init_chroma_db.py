@@ -35,6 +35,11 @@ def init_chroma_db():
             embeddings=chunks["sparse_vectors"],
             documents=chunks["documents"]
         )
+        semantic_collection.add(
+            ids=[f"id{i}" for i in range(len(chunks["documents"]))],
+            embeddings=chunks["embeddings"],
+            documents=chunks["documents"]
+        )
     
     print("Chroma db initialised!")
 

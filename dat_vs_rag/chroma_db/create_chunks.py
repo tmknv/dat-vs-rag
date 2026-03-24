@@ -1,4 +1,5 @@
 from BM25 import train_bm25, genetate_sparse_vectors
+from ModernBert import generate_embeddings
 
 
 
@@ -18,11 +19,10 @@ def get_chunks_with_embedding(filename: str) ->dict: #dict{"chunks", "dense_embe
     documents = get_chunks(filename)
 
     sparse_vectors = genetate_sparse_vectors(documents)
+    embeddings = generate_embeddings(documents)
 
-    dict = {"documents": documents, "sparse_vectors": sparse_vectors}
+    dict = {"documents": documents, "sparse_vectors": sparse_vectors, "embeddings": embeddings}
     return dict
 
-
-get_chunks_with_embedding("file_name")
 
     
