@@ -1,24 +1,42 @@
 import chromadb 
-from chromadb.utils.embedding_functions import ChromaBm25EmbeddingFunction
+import os
+
+from create_chunks import get_chunks_with_embedding, get_dataset
 
 
-client = chromadb.PersistentClient(path="./dat_vs_rag/chroma_db")
 
-bm25_ef = ChromaBm25EmbeddingFunction(
-    k=1.2,
-    b=0.75,
-    avg_doc_length=256.0,
-    token_max_length=40
-)
+def init_chroma_db():
+
+    #проверка на наличие бд. если есть - выходим из функции
+    if os.path.exists("./dat_vs_rag/chroma_db/data/chroma.sqlite3"):
+        return
+
+    client = chromadb.PersistentClient(path="./dat_vs_rag/chroma_db/data")
+
+    #коллекция семантического поиска
+    semantic_collection = client.create_collection(
+        name="semantic_collection",
+        metadata={"type": "semantic", "description": "Поиск по смыслу"}
+    )
+
+    #коллекция лексического поиска
+    lexical_collection = client.create_collection(
+        name="lexical_collection",
+        metadata={"type": "lexical", "description": "Поиск по ключевым словам"}
+    )
+
+
+    #заполнение базы данных 
+    DATASET = get_dataset()
+    for filename in DATASET:
+        chunks = get_chunks_with_embedding(filename)
+        lexical_collection.add(
+            ids=[f"id{i}" for i in range(len(chunks["documents"]))],
+            embeddings=chunks["sparse_vectors"],
+            documents=chunks["documents"]
+        )
     
-lexical_collection = client.create_collection(
-    name="lexical_collection",
-    embedding_function=bm25_ef,  # BM25 для лексического поиска
-    metadata={"type": "lexical", "description": "Поиск по ключевым словам"}
-)
+    print("Chroma db initialised!")
 
-semantic_collection = client.create_collection(
-    name="semantic_collection",
-    metadata={"type": "semantic", "description": "Поиск по смыслу"}
-)
 
+init_chroma_db()
