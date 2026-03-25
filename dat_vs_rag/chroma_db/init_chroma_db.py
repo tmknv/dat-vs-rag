@@ -31,23 +31,29 @@ def init_chroma_db():
         name="lexical_collection",
         metadata={"type": "lexical", "description": "Поиск по ключевым словам"}
     )
+    
+    print("Chroma db initialised!")
+    load_chroma_db(lexical_collection, semantic_collection)
 
 
-    #заполнение базы данных 
+def load_chroma_db(lexical_collection, semantic_collection):
+
+    '''
+    заполняет базу данных
+    '''
+
+
     DATASET = get_dataset()
     for filename in DATASET:
         chunks = get_chunks_with_embedding(filename)
         lexical_collection.add(
             ids=[f"id{i}" for i in range(len(chunks["documents"]))],
-            embeddings=chunks["sparse_vectors"],
-            documents=chunks["documents"]
+            embeddings=[vec[len(vec)//2:] for vec in chunks["sparse_vectors"]],
+            documents=chunks["documents"],
+            metadatas=[{"indices": vec[:len(vec)//2]} for vec in chunks["sparse_vectors"]]
         )
         semantic_collection.add(
             ids=[f"id{i}" for i in range(len(chunks["documents"]))],
             embeddings=chunks["embeddings"],
             documents=chunks["documents"]
         )
-    
-    print("Chroma db initialised!")
-
-

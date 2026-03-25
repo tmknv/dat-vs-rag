@@ -4,6 +4,7 @@ import chromadb
 
 import os
 
+
 # хранить в отдельном месте
 documents = [
     "cat eat mouse",
@@ -11,21 +12,41 @@ documents = [
     "man eat apple"
 ]
 
+def make_dict_sparse_vector(indices: list[int], embeddings: list[float]) ->dict[int, float]:
+
+    '''
+    превращает неудобное представление sparse vector в виде двух списков в удобный словарь
+    '''
+
+    dict = {}
+    for i in range(len(indices)):
+        dict[indices[i]] = embeddings[i]
+
+    return dict
+
+
 
 
 '''Глобальная обученая модель bm25'''
 BM25 = None
 
 #докстринги не в гугл формате, но это уже в несколько раз лучше чем у лехи с савой
-def generate_query_sparse_vector(query: str) ->list[int]:
+def generate_query_sparse_vector(query: str) ->dict[int, float]:
 
     '''
     генерирует разреженый вектор для запроса
-    структура вектора: первая половина - индексы, вторая половина - веса
     '''
 
+    #если модель не загружена - загружаем
+    global BM25
+    if BM25 is None:
+        BM25 = BM25Encoder()
+        BM25.load("./dat_vs_rag/chroma_db/data/bm25_param.json")
+
+
     vector = BM25.encode_queries([query])
-    return vector[0]['indices'] + vector[0]['values']
+
+    return make_dict_sparse_vector(vector[0]['indices'], vector[0]['values'])
 
 
 def genetate_sparse_vectors(documents: list[str]) -> dict:
@@ -35,6 +56,13 @@ def genetate_sparse_vectors(documents: list[str]) -> dict:
     генерирует разреженые вектора для документов
     структура вектора: первая половина - индексы, вторая половина - веса
     '''
+
+    #если модель не загружена - загружаем   
+    global BM25
+    if BM25 is None:
+        BM25 = BM25Encoder()
+        BM25.load("./dat_vs_rag/chroma_db/data/bm25_param.json")
+
 
     sparse_vectors = []
     
@@ -66,42 +94,24 @@ def train_bm25():
 
 
 
-'''
-все что ниже - недоделано!
-'''
-
-def make_dict_sparse_vector(vector: list[int]) ->dict[int, int]:
-
-    '''
-    превращает неудобное представление sparse vector в виде списка в удобный словарь
-    '''
-
-    dict = {}
-    for i in range(len(vector)//2):
-        dict[int(vector[i])] = vector[i+len(vector)//2]
-
-    return dict
 
 
-def BM25_score(query: str, document: list[int]) ->int:
+
+def BM25_score(query: str, indices: list[int], embeddings: list[float]) ->int:
 
     '''
     возвращает score между запросов и документом
     '''
 
 
-    query_vector = make_dict_sparse_vector(generate_query_sparse_vector(query))
-    document_vector = make_dict_sparse_vector(document)
+    query_vector = generate_query_sparse_vector(query)
+    document_vector = make_dict_sparse_vector(indices, embeddings)
 
-    print("\ndocs", document)
-    print("\nvecs", document_vector)
-    print("\nquer", query_vector, "\n")
 
     sqore = 0
 
     for index in query_vector:
         if index in document_vector.keys():
-            print(index, "is yes")
             sqore += query_vector[index]*document_vector[index]
 
     return sqore
@@ -115,21 +125,17 @@ def get_BM25_scores(query: str) -> dict[str, str]:
 
     client = chromadb.PersistentClient(path="./dat_vs_rag/chroma_db/data")
     collection = client.get_collection(name="lexical_collection")
-    documents_with_embeddings = collection.get(include=["documents", "embeddings"])
+    data = collection.get(include=["documents", "embeddings", "metadatas"])
 
-    print(documents_with_embeddings)
+    documents = data["documents"]
+    embeddings = data["embeddings"]
+    indices = [dir["indices"] for dir in data["metadatas"]]
 
-    scores = []
+    sqores = {}
 
-    for i in range(len(documents_with_embeddings["documents"])):
-        score = BM25_score(query, documents_with_embeddings["embeddings"][i])
-        scores.append(score)
+    for i in range(len(documents)):
+        sqores[documents[i]] = BM25_score(query, indices[i], embeddings[i])
 
-    return {
-        "documents": documents_with_embeddings["documents"],
-        "scores": scores
-    }
-
-
+    return sqores
 
 
