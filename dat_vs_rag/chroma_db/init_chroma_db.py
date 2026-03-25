@@ -23,7 +23,7 @@ def init_chroma_db():
     #коллекция семантического поиска
     semantic_collection = client.create_collection(
         name="semantic_collection",
-        metadata={"type": "semantic", "description": "Поиск по смыслу"}
+        metadata={"hnsw:space": "cosine", "type": "semantic", "description": "Поиск по смыслу"}
     )
 
     #коллекция лексического поиска
