@@ -1,8 +1,10 @@
+#написать шапку
 from pinecone_text.sparse import BM25Encoder
 import chromadb 
 
 import os
 
+# хранить в отдельном месте
 documents = [
     "cat eat mouse",
     "dog play cat",
@@ -14,7 +16,7 @@ documents = [
 '''Глобальная обученая модель bm25'''
 BM25 = None
 
-
+#докстринги не в гугл формате, но это уже в несколько раз лучше чем у лехи с савой
 def generate_query_sparse_vector(query: str) ->list[int]:
 
     '''

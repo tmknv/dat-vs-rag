@@ -17,6 +17,7 @@ ENGLISH_STOP_WORDS = set(stopwords.words('english'))
 
 lang = detect
 
+# вынести в .yaml, подправить структуру 
 STOP_WORDS = {
     # союзы
     'и', 'а', 'но', 'да', 'или', 'либо', 'то', 'ни', 'как', 'так', 
@@ -90,7 +91,7 @@ STOP_WORDS = {
     'были', 'был',
 }
 
-
+# можете тут использовать на фаст тексте ml model для определения языка. Могу скинуть если не найдете
 def detect_language(query: str):
     sample = query[:100].strip()
     if not sample:

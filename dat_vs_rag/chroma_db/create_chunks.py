@@ -1,5 +1,6 @@
+# нигде нет шапки
 from BM25 import train_bm25, genetate_sparse_vectors
-from ModernBert import generate_embeddings
+from ModernBert import generate_embeddings # модерн берт это название берта с HF)
 
 
 
@@ -10,7 +11,7 @@ def get_dataset() ->list[str]:
     '''
 
     return [""]
-
+# на чанки можно разным способом резать, как мвп можно грубо на равные части (до 128 токенов)
 def get_chunks(filename: str) ->list[str]:
 
     '''

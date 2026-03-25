@@ -4,7 +4,8 @@ import os
 from create_chunks import get_chunks_with_embedding, get_dataset
 
 
-
+# слишком много логики в 1 фцнкции, разбить (касается всего проекта)
+# Если написано init_chroma_db, то это обычно инициализация, создание, а у вас еще и заполнение
 def init_chroma_db():
 
     '''

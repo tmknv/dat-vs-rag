@@ -2,7 +2,7 @@ from sentence_transformers import SentenceTransformer
 
 
 '''глобальная модель берта, чтобы при каждом запросе не подгружать'''
-BERT = None
+BERT = None # вынести в config.yaml
 
 def generate_embeddings(documents: list[str]) ->list[list[int]]:
     

@@ -1,4 +1,4 @@
-
+# принты заменить на logger. Logger в отдельном файле можете прописать и везде использовать
 def add_user(user_id: str, user_name: str):
     from .connect import conn
     select_querry = f"SELECT user_id FROM USERS WHERE user_id = {user_id}"
