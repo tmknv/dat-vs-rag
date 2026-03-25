@@ -50,4 +50,3 @@ def init_chroma_db():
     print("Chroma db initialised!")
 
 
-init_chroma_db()
