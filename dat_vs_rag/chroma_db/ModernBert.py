@@ -1,5 +1,6 @@
 from sentence_transformers import SentenceTransformer
 import chromadb
+import numpy as np
 
 '''глобальная модель берта, чтобы при каждом запросе не подгружать'''
 BERT = None # вынести в config.yaml
@@ -41,16 +42,13 @@ def semantic_scores(query: str):
     collection = client.get_collection("semantic_collection")
     
     query_emb = generate_query_embedding(query)
-    total_docs = collection.count()
 
-    results = collection.query(
-        query_embeddings=[query_emb],
-        n_results=total_docs,
-        include=["documents", "distances"]
-    )
+    data = collection.get(include=["documents", "embeddings"])
     
     scores = {}
-    for i in range(len(results["ids"][0])):
-        scores[results["documents"][0][i]] = results["distances"][0][i]
+    for i in range(len(data["documents"])):
+        doc = data["documents"][i]
+        doc_emb = data["embeddings"][i]
+        scores[doc] = 1 - np.dot(query_emb, doc_emb)
     
     return scores
