@@ -2,10 +2,9 @@ import chromadb
 import os
 
 from .create_chunks import get_chunks_with_embedding, get_dataset
+from .ModernBert import semantic_scores
 
 
-# слишком много логики в 1 фцнкции, разбить (касается всего проекта)
-# Если написано init_chroma_db, то это обычно инициализация, создание, а у вас еще и заполнение
 def init_chroma_db():
 
     '''
@@ -23,7 +22,7 @@ def init_chroma_db():
     #коллекция семантического поиска
     semantic_collection = client.create_collection(
         name="semantic_collection",
-        metadata={"type": "semantic", "description": "Поиск по смыслу"}
+        metadata={"hnsw:space": "cosine", "type": "semantic", "description": "Поиск по смыслу"}
     )
 
     #коллекция лексического поиска

@@ -29,6 +29,11 @@ def generate_query_embedding(query: str) ->list[int]:
     создает эмбединги для запросов
     '''
 
+    global BERT
+    if BERT is None:
+        BERT = SentenceTransformer("nickprock/ModernBERT-base-sts")
+
+
     return BERT.encode(
         [query],
         normalize_embeddings=True 

@@ -117,7 +117,7 @@ def BM25_score(query: str, indices: list[int], embeddings: list[float]) ->int:
     return sqore
 
 
-def get_BM25_scores(query: str) -> dict[str, str]: 
+def get_BM25_scores(query: str) -> dict[str, float]: 
 
     '''
     возвращает score змежду запросом и каждым документом
