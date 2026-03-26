@@ -1,6 +1,6 @@
 # нигде нет шапки
-from BM25 import train_bm25, genetate_sparse_vectors
-from ModernBert import generate_embeddings # модерн берт это название берта с HF)
+from .BM25 import train_bm25, genetate_sparse_vectors
+from .ModernBert import generate_embeddings # модерн берт это название берта с HF)
 
 
 

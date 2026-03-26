@@ -1,7 +1,7 @@
 import chromadb 
 import os
 
-from create_chunks import get_chunks_with_embedding, get_dataset
+from .create_chunks import get_chunks_with_embedding, get_dataset
 
 
 # слишком много логики в 1 фцнкции, разбить (касается всего проекта)
