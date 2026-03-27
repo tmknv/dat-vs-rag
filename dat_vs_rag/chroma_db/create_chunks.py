@@ -19,10 +19,11 @@ def get_chunks(filename: str) ->list[str]:
     '''
 
     return [
-        "cat eat mouse",
-        "dog play cat",
-        "man eat apple"
-    ]   
+        "there are 10 apples in the box",
+        "apple is red",
+        "box is large",
+        "womans play games bad"
+    ]
 
 def get_chunks_with_embedding(filename: str) ->dict: #dict{"chunks", "sparse_vectors", "embeddings"}
 

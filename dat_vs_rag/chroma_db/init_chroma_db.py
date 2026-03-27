@@ -2,7 +2,7 @@ import chromadb
 import os
 
 from .create_chunks import get_chunks_with_embedding, get_dataset
-from .ModernBert import semantic_scores
+from .BM25 import get_BM25_scores
 
 
 def init_chroma_db():
@@ -47,12 +47,12 @@ def load_chroma_db(lexical_collection, semantic_collection):
         chunks = get_chunks_with_embedding(filename)
         lexical_collection.add(
             ids=[f"id{i}" for i in range(len(chunks["documents"]))],
-            embeddings=[vec[len(vec)//2:] for vec in chunks["sparse_vectors"]],
-            documents=chunks["documents"],
-            metadatas=[{"indices": vec[:len(vec)//2]} for vec in chunks["sparse_vectors"]]
+            embeddings=chunks["sparse_vectors"],
+            documents=chunks["documents"]
         )
         semantic_collection.add(
             ids=[f"id{i}" for i in range(len(chunks["documents"]))],
             embeddings=chunks["embeddings"],
             documents=chunks["documents"]
         )
+    
