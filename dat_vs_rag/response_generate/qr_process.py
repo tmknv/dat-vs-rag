@@ -4,30 +4,26 @@ from nltk.corpus import stopwords
 from pathlib import Path
 import nltk
 import re
-import yaml
 
-#from mawo_pymorphy3 import create_analyzer
-#import emoji
-#_morph = create_analyzer()
+from mawo_pymorphy3 import create_analyzer
+_russian_morph = create_analyzer()
 
+
+"""следующие 3 строчки при первом запуске раскомментить"""
 #nltk.download('wordnet')
 #nltk.download('stopwords')
 #nltk.download('omw-1.4')
 
-def load_russian_stop_words(yaml_path='dat-vs-rag/dat_vs_rag/response_generate/ru_stop_voc.yaml'):
-    try:
-        with open(yaml_path, 'r', encoding='utf-8') as f:
-            data = yaml.safe_load(f)
-        return set(data.get('stop_words', []))
-    except FileNotFoundError:
-        print(f"Файл {yaml_path} не найден, используются пустые стоп-слова")
-        return set()
+IMPORTANT_RU = {'не', 'нет'}
+IMPORTANT_EN = {'not', 'no', 'none', 'never', 'without'}
 
-RUSSIAN_STOP_WORDS = load_russian_stop_words()
+
+ENGLISH_STOP_WORDS = set(stopwords.words('english'))
+RUSSIAN_STOP_WORDS = set(stopwords.words('russian'))
+
 
 DetectorFactory.seed = 0
-_lemmatizer = WordNetLemmatizer()
-ENGLISH_STOP_WORDS = set(stopwords.words('english'))
+_english_lemmatizer = WordNetLemmatizer()
 
 lang = detect
 
@@ -40,15 +36,40 @@ def detect_language(query: str):
     lang = detect(sample)
     return lang if lang in ['ru', 'en'] else 'unknown'
 
-def lemmatize_english(query: str):
-    words = query.split()
-    lemmatized = [_lemmatizer.lemmatize(w.lower()) for w in words]
+def lemmatize_russian(text: str) -> str:
+    # Извлекаем слова только из кириллицы (включая ё)
+    words = re.findall(r'\b[а-яё]+\b', text)
+    
+    lemmatized = []
+    for word in words:
+        try:
+            parse = _russian_morph.parse(word)[0]
+            lemma = parse.normal_form
+            lemmatized.append(lemma)
+        except Exception:
+            lemmatized.append(word)
+    
     return ' '.join(lemmatized)
 
-def remove_english_stopwords(query: str):
-    words = query.split()
-    important = {'not', 'no', 'none', 'never', 'without'}
-    words = [w for w in words if w not in ENGLISH_STOP_WORDS or w in important]
+def lemmatize_english(text: str):
+    words = text.split()
+    
+    lemmatized = []
+    for word in words:
+        if word: 
+            lemma = _english_lemmatizer.lemmatize(word)
+            lemmatized.append(lemma)
+    
+    return ' '.join(lemmatized)
+
+def remove_stopwords(text: str, lang_code: str):
+    words = text.split()
+    
+    if lang_code == 'en':
+        words = [w for w in words if w not in ENGLISH_STOP_WORDS or w in IMPORTANT_EN]
+    else:  
+        words = [w for w in words if w not in RUSSIAN_STOP_WORDS or w in IMPORTANT_RU]
+    
     return ' '.join(words)
 
 def query_process(query: str):
@@ -64,17 +85,15 @@ def query_process(query: str):
     lang = detect_language(query)
 
     # лемматизация
-    if lang == 'en':
+    if lang == 'ru':
+        query = lemmatize_russian(query)
+    elif lang == 'en':
         query = lemmatize_english(query)
 
     # удаляем стоп-слова, если слов больше 3
     words = query.split()
-    if len(words) > 3:
-        if lang == 'en':
-            query = remove_english_stopwords(query)
-        else:
-            important = {'не'}
-            words = [w for w in words if w not in RUSSIAN_STOP_WORDS or w in important]
-            query = ' '.join(words)
+    if len(words) > 2:
+        if lang in ['ru', 'en']:
+            query = remove_stopwords(query, lang)
     
     return query.strip()
