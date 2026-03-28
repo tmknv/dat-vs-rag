@@ -18,7 +18,10 @@ dependencies = [
     "pinecone-text (>=0.11.0,<0.12.0)",
     "torch (>=2.11.0,<3.0.0)",
     "transformers (>=5.3.0,<6.0.0)",
-    "sentence-transformers (>=5.3.0,<6.0.0)"
+    "sentence-transformers (>=5.3.0,<6.0.0)",
+    "chromadb (>=1.5.5,<2.0.0)",
+    "protobuf (>=3.19.0,<4.0.0)",
+    "mawo-pymorphy3 (>=1.0.4,<2.0.0)"
 ]
 
 
