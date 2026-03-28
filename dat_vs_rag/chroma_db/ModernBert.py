@@ -1,3 +1,8 @@
+'''
+Файл для генерации эмбедингов бертом
+'''
+
+
 from sentence_transformers import SentenceTransformer
 import chromadb
 import numpy as np
@@ -54,6 +59,6 @@ def semantic_scores(query: str):
     for i in range(len(data["documents"])):
         doc = data["documents"][i]
         doc_emb = data["embeddings"][i]
-        scores[doc] = 1 - np.dot(query_emb, doc_emb)
+        scores[doc] = 1 + np.dot(query_emb, doc_emb)
     
     return scores

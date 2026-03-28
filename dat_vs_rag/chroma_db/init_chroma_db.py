@@ -1,3 +1,8 @@
+'''
+Инициализация и заполнения Chroma db
+'''
+
+
 import chromadb 
 import os
 
@@ -55,4 +60,3 @@ def load_chroma_db(lexical_collection, semantic_collection):
             embeddings=chunks["embeddings"],
             documents=chunks["documents"]
         )
-    

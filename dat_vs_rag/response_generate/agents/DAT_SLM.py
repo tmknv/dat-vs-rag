@@ -1,6 +1,6 @@
-from DAT import get_DAT_context
+from .DAT import get_DAT_context
 
-from models import Arcee_Mini
+from .models import Arcee_Mini
 
 def create_request_with_context(query: str, context: list[str]):
     return ""

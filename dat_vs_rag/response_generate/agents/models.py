@@ -39,3 +39,5 @@ def Arcee_Mini(query: str) ->str:
     except Exception as e:
         return f"Ошибка: {e}"
 
+
+print(Arcee_Mini("Hello! How many days in year?"))

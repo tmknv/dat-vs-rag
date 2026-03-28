@@ -1,4 +1,8 @@
-# нигде нет шапки
+'''
+Файл для разбивания датасета на чанки
+'''
+
+
 from .BM25 import train_bm25, genetate_sparse_vectors
 from .ModernBert import generate_embeddings # модерн берт это название берта с HF)
 
@@ -34,7 +38,6 @@ def get_chunks_with_embedding(filename: str) ->dict: #dict{"chunks", "sparse_vec
     train_bm25()
 
     documents = get_chunks(filename)
-
     sparse_vectors = genetate_sparse_vectors(documents)
     embeddings = generate_embeddings(documents)
 

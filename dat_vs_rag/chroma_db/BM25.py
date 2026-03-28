@@ -1,6 +1,13 @@
-#написать шапку
+'''
+Файл для обучения BM25, преобразования запросов и документов в разреженые векторы, расчета score между запросом пользователя и всеми документами 
+'''
+
+
 from pinecone_text.sparse import BM25Encoder
 import chromadb 
+from scipy.special import expit
+import numpy as np
+
 
 import os
 
@@ -130,6 +137,7 @@ def BM25_score(query: str,doc_vector: list[float]) ->int:
 
     query_vector = generate_query_sparse_vector(query)
     score = sum(a*b for a, b in zip(query_vector, doc_vector))
+
     return score
 
 def get_BM25_scores(query: str) -> dict[str, float]: 
@@ -150,12 +158,20 @@ def get_BM25_scores(query: str) -> dict[str, float]:
     documents = data["documents"]
     doc_vectors = data["embeddings"]
 
-    sqores = {}
+    scores = [0]*len(documents)
 
     for i in range(len(documents)):
-        sqores[documents[i]] = BM25_score(query, doc_vectors[i])
+        scores[i] = BM25_score(query, doc_vectors[i])
+    
+    mean = np.average(scores)
+    std = np.std(scores)
 
-    return sqores
+    scores_with_docs = {}
+
+    for i in range(len(doc_vectors)):
+        scores_with_docs[documents[i]] = expit((scores[i] - mean)/std)
+
+    return scores_with_docs
 
 
 
