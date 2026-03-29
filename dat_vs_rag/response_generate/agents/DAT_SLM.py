@@ -1,9 +1,7 @@
 from .DAT import get_DAT_context
 
-from .models import Arcee_Mini
+from .models import Gemma_3_4B
 
-def create_request_with_context(query: str, context: list[str]):
-    return ""
 
 
 def DAT_SLM_response(query: str) ->str:
@@ -13,10 +11,29 @@ def DAT_SLM_response(query: str) ->str:
     '''
 
     context = get_DAT_context(query)
-    
-    request_with_context = create_request_with_context(query, context)
 
-    response = Arcee_Mini(request_with_context)
+    print("Query:", query, "\nContext: ", context)
+    
+    request_with_context = f"""
+        You are a helpful assistant that answers questions based ONLY on the provided contexts.
+
+        Contexts:
+        1. {context[0]}
+        2. {context[1]}
+        3. {context[2]}
+
+        Question: {query}
+
+        Instructions:
+        - Answer ONLY using information from the contexts above
+        - If the answer cannot be found in the contexts, say "I don't have enough information to answer this question"
+        - Do not use your own knowledge or external information
+        - If the contexts conflict, explain the discrepancy
+
+        Answer:
+    """
+
+    response = Gemma_3_4B(request_with_context)
 
     return response
 
