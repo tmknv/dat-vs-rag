@@ -1,16 +1,16 @@
 '''
-Файл генерации ответа DAT SLM
+Файл генерации ответа RAG LLM
 '''
 
-from .DAT import get_DAT_context
+from .RAG import get_RAG_context
 
-from .models import Gemma_3_4B
+from .models import Gemma_3_27B
 
 
 
-def DAT_SLM_response(query: str) ->str:
-
-    '''генерирует ответ SLM на основе запроса и контекста, найденного алгоритмом DAT
+def RAG_LLM_response(query: str) ->str:
+  
+    '''генерирует ответ LLM на основе запроса и контекста, найденного алгоритмом RAG
 
     Аргументы:
         Запрос пользователя
@@ -19,7 +19,7 @@ def DAT_SLM_response(query: str) ->str:
         Ответ модели
     '''
 
-    context = get_DAT_context(query)
+    context = get_RAG_context(query)
 
     print("Query:", query, "\nContext: ", context)
     
@@ -43,10 +43,6 @@ def DAT_SLM_response(query: str) ->str:
         Answer:
     """
 
-    response = Gemma_3_4B(request_with_context)
+    response = Gemma_3_27B(request_with_context)
 
     return response
-
-
-
-

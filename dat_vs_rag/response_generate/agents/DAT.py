@@ -1,3 +1,8 @@
+'''
+Файл с реализацией DAT
+'''
+
+
 
 from dat_vs_rag.chroma_db.BM25 import get_BM25_scores
 from dat_vs_rag.chroma_db.ModernBert import semantic_scores
@@ -7,8 +12,13 @@ from .models import Gemma_3_4B
 
 def generate_grades(query: str, top1_lex: str, top1_sem: str) ->dict[str, int]:
 
-    '''
-    получаем оценки релевантности лексического и семантического поисков
+    '''Получаем оценки релевантности лексического и семантического поисков
+
+    Аргументы:
+        запрос пользователя, топ1 результат лексического поиска, топ1 результат семантического поиска
+
+    Возвращает:
+        Оценку релевантности лексического и семанического поисков
     '''
 
     str_grades = Gemma_3_4B(
@@ -56,6 +66,13 @@ def generate_grades(query: str, top1_lex: str, top1_sem: str) ->dict[str, int]:
         """
     )
 
+    if len(str_grades)>7:
+        print("no grades")
+        return {
+        "sem": 0,
+        "lex": 0
+    }
+
     grades = str_grades.split(" ")
 
     return {
@@ -66,8 +83,13 @@ def generate_grades(query: str, top1_lex: str, top1_sem: str) ->dict[str, int]:
 
 def calculate_alpha(grades: dict[str, int]) ->float:
 
-    '''
-    функция расчета коэффициента альфа из оценок релевантности лексического и семантического поисков
+    '''функция расчета коэффициента альфа из оценок релевантности лексического и семантического поисков
+
+    Аргументы:
+        Оценки релевантности лексического и семантического поисков
+
+    Возвращает:
+        Альфа коэффициент
     '''
 
     if grades["sem"]==0 and grades["lex"]==0:
@@ -82,8 +104,13 @@ def calculate_alpha(grades: dict[str, int]) ->float:
 
 def generate_alpha_coef(query:str, lex_scores: dict[str, float], sem_scores: dict[str, float]) ->float:
 
-    '''
-    генерирует тот самый альфа коэффициент
+    '''генерирует тот самый альфа коэффициент
+
+    Аргументы:
+        Запрос, лексичекие и семантические скоры между запросом и документами
+
+    Возвращает:
+        Альфа коэффициент
     '''
 
     max_lex_score = max(lex_scores.values())
@@ -100,8 +127,13 @@ def generate_alpha_coef(query:str, lex_scores: dict[str, float], sem_scores: dic
 
 def get_hibrid_scores(query: str) ->dict:
 
-    '''
-    возвращает гибридный скор между запросом и каждым докуметом
+    '''расчет гибридного скора между запросом и каждым документом
+    
+    Аргументы:
+        Запрос пользователя
+
+    Возвращает:
+        Гибридный скор между запросом и каждым документом
     '''
 
     BM25_scores = get_BM25_scores(query)
@@ -118,8 +150,13 @@ def get_hibrid_scores(query: str) ->dict:
 
 def get_top3_docs(scores: dict[str, float]) ->list[str]:
 
-    '''
-    ищет топ 3 в словаре со всеми документами и их скорами 
+    '''ищет топ 3 в словаре со всеми документами и их скорами 
+    
+    Аргументы:
+        Словарь гибридных скоров между запросом и каждым документом
+
+    Возвращает:
+        Топ 3 документа по гибридному скору
     '''
 
     top3 = [{"doc1": -10.0}, {"doc2": -10.0}, {"doc3": -10.0}]
@@ -140,8 +177,14 @@ def get_top3_docs(scores: dict[str, float]) ->list[str]:
     return [list(top.keys())[0] for top in top3]
 
 def get_DAT_context(query: str) ->list[str]:
-    '''
-    возвращает контекст по запросу
+
+    '''возвращает контекст по запросу
+
+    Аргументы:
+        Запрос пользователя
+    
+    Возвращает:
+        контекст, найденный алгоритмом DAT
     '''
 
     docs_with_hibrid_score = get_hibrid_scores(query)

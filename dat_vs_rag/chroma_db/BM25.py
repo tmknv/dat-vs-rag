@@ -45,9 +45,14 @@ def generate_query_sparse_vector(query: str) ->list[float]:
 
     #если модель не загружена - загружаем
     global BM25
+    global KEYS
     if BM25 is None:
         BM25 = BM25Encoder()
         BM25.load("./dat_vs_rag/chroma_db/data/bm25_param.json")
+    if len(KEYS)==0:
+        keys = list(BM25.doc_freq.keys())
+        for i in range(len(keys)):
+            KEYS[keys[i]] = i
 
 
     indices_values = BM25.encode_queries(query)
@@ -77,9 +82,15 @@ def genetate_sparse_vectors(documents: list[str]) -> list[float]:
 
     #если модель не загружена - загружаем   
     global BM25
+    global KEYS
     if BM25 is None:
         BM25 = BM25Encoder()
         BM25.load("./dat_vs_rag/chroma_db/data/bm25_param.json")
+    if len(KEYS)==0:
+        keys = list(BM25.doc_freq.keys())
+        for i in range(len(keys)):
+            KEYS[keys[i]] = i
+    
 
 
     sparse_vectors = []
@@ -103,6 +114,7 @@ def train_bm25():
     '''
 
     global BM25
+    global KEYS
 
     if os.path.exists("./dat_vs_rag/chroma_db/data/bm25_param.json"):
         return
@@ -172,6 +184,4 @@ def get_BM25_scores(query: str) -> dict[str, float]:
         scores_with_docs[documents[i]] = expit((scores[i] - mean)/std)
 
     return scores_with_docs
-
-
 
