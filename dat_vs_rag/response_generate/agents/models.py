@@ -6,6 +6,8 @@ import requests
 import json
 import time
 
+api_key = "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"
+
 
 def Gemma_3_4B(query: str, max_retries: int = 3) -> str:
   
@@ -17,9 +19,7 @@ def Gemma_3_4B(query: str, max_retries: int = 3) -> str:
     Возвращает:
         Ответ модели
     '''
-    
-    api_key = "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"
-    
+        
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
@@ -69,9 +69,7 @@ def Gemma_3_27B(query: str, max_retries: int = 3) -> str:
     Возвращает:
         Ответ модели
     '''
-    
-    api_key = "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"
-    
+        
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
