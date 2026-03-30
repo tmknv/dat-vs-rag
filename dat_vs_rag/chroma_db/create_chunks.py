@@ -2,47 +2,83 @@
 Файл для разбивания датасета на чанки
 '''
 
-
+from itertools import islice
 from .BM25 import train_bm25, genetate_sparse_vectors
-from .ModernBert import generate_embeddings # модерн берт это название берта с HF)
+from .ModernBert import generate_embeddings 
+
+from datasets import load_dataset
+from chonkie import TokenChunker
+
+chunker = TokenChunker(
+    tokenizer="answerdotai/ModernBERT-base",
+    chunk_size=128, 
+    chunk_overlap=20
+)
 
 
+def load_natural_questions(limit: int = 10) -> list[dict]:
+    ds = load_dataset("natural_questions", split="train", streaming=True)
+    result = []
 
-def get_dataset() ->list[str]:
-    
+    for i, row in enumerate(islice(ds, limit)):
+        question = row["question"]["text"]
+
+        tokens = row["document"]["tokens"]["token"]
+        is_html = row["document"]["tokens"]["is_html"]
+
+        clean_tokens = [tok for tok, html_flag in zip(tokens, is_html) if not html_flag]
+        text = " ".join(clean_tokens).strip()
+
+        if not text:
+            continue
+
+        result.append({
+            "id": f"nq_{i}",
+            "question": question,
+            "text": text
+        })
+
+    return result
+
+def get_dataset(dataset_name: str = "natural_questions", limit: int = 10) -> list[dict]:
     '''
-    Возвращает список названий файлов датасета
+    Универсальная точка входа для загрузки датасета.
+    Все датасеты приводятся к формату:
+    {
+        "id": "...",
+        "question": "...",
+        "text": "..."
+    }
     '''
+    if dataset_name == "natural_questions":
+        return load_natural_questions(limit)
 
-    return [""]
-# на чанки можно разным способом резать, как мвп можно грубо на равные части (до 128 токенов)
-def get_chunks(filename: str) ->list[str]:
+    raise ValueError(f"Unsupported dataset: {dataset_name}")
 
-    '''
-    Разбивает текст одного файла на чанки
-    '''
+
+def get_chunks(sample: dict) -> list[str]:
+    question = sample["question"]
+    text = sample["text"]
+
+    context_chunks = chunker.chunk(text)
 
     return [
-        "there are 10 apples in the box",
-        "apple is red",
-        "box is large",
-        "womans play games bad"
+        f"{question}\n{chunk.text}"
+        for chunk in context_chunks
     ]
 
-def get_chunks_with_embedding(filename: str) ->dict: #dict{"chunks", "sparse_vectors", "embeddings"}
 
-    '''
-    возвращает чанки файла в виде словаря со структурой: [чанки, их разряженые вектора, их эмбеддинги]
-    '''
-
+def get_chunks_with_embedding(sample: dict):
     train_bm25()
 
-    documents = get_chunks(filename)
+    documents = get_chunks(sample)
     sparse_vectors = genetate_sparse_vectors(documents)
     embeddings = generate_embeddings(documents)
 
-    dict = {"documents": documents, "sparse_vectors": sparse_vectors, "embeddings": embeddings}
-    return dict
-
+    return {
+        "documents": documents,
+        "sparse_vectors": sparse_vectors,
+        "embeddings": embeddings
+    }
 
     

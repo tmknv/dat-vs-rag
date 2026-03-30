@@ -21,7 +21,9 @@ dependencies = [
     "sentence-transformers (>=5.3.0,<6.0.0)",
     "chromadb (>=1.5.5,<2.0.0)",
     "protobuf (>=3.19.0,<4.0.0)",
-    "mawo-pymorphy3 (>=1.0.4,<2.0.0)"
+    "mawo-pymorphy3 (>=1.0.4,<2.0.0)",
+    "datasets (>=4.8.4,<5.0.0)",
+    "chonkie (>=1.6.1,<2.0.0)",
 ]
 
 

@@ -47,9 +47,9 @@ def load_chroma_db(lexical_collection, semantic_collection):
     '''
 
 
-    DATASET = get_dataset()
-    for filename in DATASET:
-        chunks = get_chunks_with_embedding(filename)
+    DATASET = get_dataset(dataset_name="natural_questions", limit=10)
+    for sample in DATASET:
+        chunks = get_chunks_with_embedding(sample)
         lexical_collection.add(
             ids=[f"id{i}" for i in range(len(chunks["documents"]))],
             embeddings=chunks["sparse_vectors"],
