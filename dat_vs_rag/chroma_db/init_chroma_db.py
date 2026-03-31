@@ -6,8 +6,8 @@
 import chromadb 
 import os
 
-from .create_chunks import get_chunks_with_embedding, get_dataset
-from .BM25 import get_BM25_scores
+from .create_chunks import get_chunks_with_embedding, get_dataset, get_chunks
+from .BM25 import train_bm25
 
 
 def init_chroma_db():
@@ -48,15 +48,25 @@ def load_chroma_db(lexical_collection, semantic_collection):
 
 
     DATASET = get_dataset(dataset_name="natural_questions", limit=10)
+
+    total_chunks = []
     for sample in DATASET:
-        chunks = get_chunks_with_embedding(sample)
-        lexical_collection.add(
-            ids=[f"id{i}" for i in range(len(chunks["documents"]))],
-            embeddings=chunks["sparse_vectors"],
-            documents=chunks["documents"]
-        )
-        semantic_collection.add(
-            ids=[f"id{i}" for i in range(len(chunks["documents"]))],
-            embeddings=chunks["embeddings"],
-            documents=chunks["documents"]
-        )
+        chunks = get_chunks(sample)
+        total_chunks += chunks
+
+    train_bm25(total_chunks)
+
+    total_chunks_with_embedings = get_chunks_with_embedding(total_chunks)
+
+    lexical_collection.add(
+        ids=[f"id{i}" for i in range(len(total_chunks_with_embedings["documents"]))],
+        embeddings=total_chunks_with_embedings["sparse_vectors"],
+        documents=total_chunks_with_embedings["documents"]
+    )
+    semantic_collection.add(
+        ids=[f"id{i}" for i in range(len(total_chunks_with_embedings["documents"]))],
+        embeddings=total_chunks_with_embedings["embeddings"],
+        documents=total_chunks_with_embedings["documents"]
+    )
+
+    print("Chroma db loaded!")

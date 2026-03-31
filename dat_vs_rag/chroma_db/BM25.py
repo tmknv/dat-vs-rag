@@ -8,17 +8,7 @@ import chromadb
 from scipy.special import expit
 import numpy as np
 
-
 import os
-
-
-# хранить в отдельном месте
-documents = [
-    "there are 10 apples in the box",
-    "apple is red",
-    "box is large",
-    "womans play games bad"
-]
 
 
 
@@ -107,7 +97,7 @@ def genetate_sparse_vectors(documents: list[str]) -> list[float]:
     return sparse_vectors
 
 
-def train_bm25():
+def train_bm25(documents: list[str]):
 
     '''
     Тренирует bm25 на документах

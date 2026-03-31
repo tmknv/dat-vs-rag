@@ -62,3 +62,8 @@ def semantic_scores(query: str):
         scores[doc] = 1 + np.dot(query_emb, doc_emb)
     
     return scores
+
+
+# print(len(generate_embeddings(["привет"])[0]))
+
+# print(len(generate_embeddings(["привет, как дела?"])[0]))

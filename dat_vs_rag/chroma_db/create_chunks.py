@@ -9,17 +9,19 @@ from .ModernBert import generate_embeddings
 from datasets import load_dataset
 from chonkie import TokenChunker
 
+
+
 chunker = TokenChunker(
     tokenizer="answerdotai/ModernBERT-base",
     chunk_size=128, 
     chunk_overlap=20
 )
 
-
-def load_natural_questions(limit: int = 10) -> list[dict]:
+def load_natural_questions(limit: int = 1) -> list[dict]:
+    print("load")
     ds = load_dataset("natural_questions", split="train", streaming=True)
     result = []
-
+    print("loaded")
     for i, row in enumerate(islice(ds, limit)):
         question = row["question"]["text"]
 
@@ -37,8 +39,9 @@ def load_natural_questions(limit: int = 10) -> list[dict]:
             "question": question,
             "text": text
         })
-
+    print("ds len:", len(result))
     return result
+
 
 def get_dataset(dataset_name: str = "natural_questions", limit: int = 10) -> list[dict]:
     '''
@@ -68,10 +71,8 @@ def get_chunks(sample: dict) -> list[str]:
     ]
 
 
-def get_chunks_with_embedding(sample: dict):
-    train_bm25()
+def get_chunks_with_embedding(documents: list[str]):
 
-    documents = get_chunks(sample)
     sparse_vectors = genetate_sparse_vectors(documents)
     embeddings = generate_embeddings(documents)
 
@@ -81,4 +82,3 @@ def get_chunks_with_embedding(sample: dict):
         "embeddings": embeddings
     }
 
-    
