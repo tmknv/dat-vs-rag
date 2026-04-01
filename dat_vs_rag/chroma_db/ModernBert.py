@@ -6,6 +6,12 @@
 from sentence_transformers import SentenceTransformer
 import chromadb
 import numpy as np
+from dotenv import load_dotenv
+import os
+from huggingface_hub import login
+
+load_dotenv()
+login(token=os.getenv("HF_TOKEN"))
 
 '''глобальная модель берта, чтобы при каждом запросе не подгружать'''
 BERT = None # вынести в config.yaml

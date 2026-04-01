@@ -24,6 +24,7 @@ dependencies = [
     "mawo-pymorphy3 (>=1.0.4,<2.0.0)",
     "datasets (>=4.8.4,<5.0.0)",
     "chonkie (>=1.6.1,<2.0.0)",
+    "python-dotenv (>=1.2.2,<2.0.0)",
 ]
 
 

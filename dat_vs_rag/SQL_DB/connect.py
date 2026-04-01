@@ -1,14 +1,12 @@
 import psycopg2
 from psycopg2 import OperationalError
+from dotenv import load_dotenv
+import json
+import os
 
-# в .env вынести, а потом брать с помощью отдельной утилиты
-conn_params = {
-    "host": "localhost",      # или IP вашего сервера
-    "port": "5432",           # порт PostgreSQL по умолчанию
-    "database": "postgres",
-    "user": "postgres",
-    "password": "postgres_pas"
-}
+load_dotenv()
+
+conn_params = json.loads(os.getenv("SQL_CONNETCT_PARAMS"))
 
 conn = None
 

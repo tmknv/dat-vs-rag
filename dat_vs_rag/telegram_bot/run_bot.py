@@ -1,12 +1,15 @@
 import asyncio
 from aiogram import Bot, Dispatcher
 
-from config import TOKEN
 from handlers import router
 from dat_vs_rag.SQL_DB.connect import connect_DB
 from dat_vs_rag.chroma_db.init_chroma_db import init_chroma_db
 
-bot = Bot(token=TOKEN)
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+bot = Bot(token=os.getenv("TELEGRAM_BOT_TOKEN"))
 dp = Dispatcher()
 
 async def main():

@@ -5,8 +5,12 @@
 import requests
 import json
 import time
+from dotenv import load_dotenv
+import os
 
-api_key = "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"
+load_dotenv()
+
+api_key = os.getenv("OPENROUTER_API_KEY")
 
 
 def Gemma_3_4B(query: str, max_retries: int = 3) -> str:

@@ -1,2 +1,0 @@
-TOKEN = "8798193710:AAEHkMuCbTYRY1knkDeAz3MsjhGukUJs_-Q"
-# в .env
