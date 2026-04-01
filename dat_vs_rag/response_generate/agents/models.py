@@ -6,7 +6,7 @@ import requests
 import json
 import time
 
-api_key = "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"
+api_key = "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"
 
 
 def Gemma_3_4B(query: str, max_retries: int = 3) -> str:
@@ -42,17 +42,17 @@ def Gemma_3_4B(query: str, max_retries: int = 3) -> str:
             )
             
             result = response.json()
-            
+
             # Если есть 'choices', возвращаем ответ
-            if 'choices' in result and result['choices']:
+            if 'error' not in result and result:
                 return result['choices'][0]['message']['content']
             
             # Если ошибка, пробуем снова
-            print(f"Attempt {attempt + 1} failed, retrying...")
+            print(f"SLM:Attempt {attempt + 1} failed, error: {result['error']['message']}, retrying...")
             time.sleep(2 * (attempt + 1))
             
         except Exception as e:
-            print(f"Attempt {attempt + 1} error: {e}, retrying...")
+            print(f"SLM:Attempt {attempt + 1} error: {e}, retrying...")
             time.sleep(2 * (attempt + 1))
     
     # Если все попытки провалились, возвращаем сообщение об ошибке
@@ -94,15 +94,15 @@ def Gemma_3_27B(query: str, max_retries: int = 3) -> str:
             result = response.json()
             
             # Если есть 'choices', возвращаем ответ
-            if 'choices' in result and result['choices']:
+            if 'error' not in result and result:
                 return result['choices'][0]['message']['content']
             
             # Если ошибка, пробуем снова
-            print(f"Attempt {attempt + 1} failed, retrying...")
+            print(f"LLM: Attempt {attempt + 1} failed, error: {result['error']['message']}, retrying...")
             time.sleep(2 * (attempt + 1))
             
         except Exception as e:
-            print(f"Attempt {attempt + 1} error: {e}, retrying...")
+            print(f"LLM:Attempt {attempt + 1} error: {e}, retrying...")
             time.sleep(2 * (attempt + 1))
     
     # Если все попытки провалились, возвращаем сообщение об ошибке

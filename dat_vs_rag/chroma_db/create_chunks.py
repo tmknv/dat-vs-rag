@@ -2,13 +2,10 @@
 Файл для разбивания датасета на чанки
 '''
 
-from itertools import islice
 from .BM25 import train_bm25, genetate_sparse_vectors
 from .ModernBert import generate_embeddings 
-
-from datasets import load_dataset
 from chonkie import TokenChunker
-
+import json
 
 
 chunker = TokenChunker(
@@ -17,29 +14,21 @@ chunker = TokenChunker(
     chunk_overlap=20
 )
 
-def load_natural_questions(limit: int = 1) -> list[dict]:
-    print("load")
-    ds = load_dataset("natural_questions", split="train", streaming=True)
+def load_local_nq(path: str, limit: int = 1000) -> list[dict]:
     result = []
-    print("loaded")
-    for i, row in enumerate(islice(ds, limit)):
-        question = row["question"]["text"]
 
-        tokens = row["document"]["tokens"]["token"]
-        is_html = row["document"]["tokens"]["is_html"]
+    with open(path, "r", encoding="utf-8") as f:
+        for i, line in enumerate(f):
+            if i >= limit:
+                break
 
-        clean_tokens = [tok for tok, html_flag in zip(tokens, is_html) if not html_flag]
-        text = " ".join(clean_tokens).strip()
+            sample = json.loads(line)
 
-        if not text:
-            continue
+            if not sample["text"].strip():
+                continue
 
-        result.append({
-            "id": f"nq_{i}",
-            "question": question,
-            "text": text
-        })
-    print("ds len:", len(result))
+            result.append(sample)
+
     return result
 
 
@@ -54,7 +43,7 @@ def get_dataset(dataset_name: str = "natural_questions", limit: int = 10) -> lis
     }
     '''
     if dataset_name == "natural_questions":
-        return load_natural_questions(limit)
+        return load_local_nq("./dat_vs_rag/chroma_db/data/natural_questions_300.jsonl", limit)
 
     raise ValueError(f"Unsupported dataset: {dataset_name}")
 

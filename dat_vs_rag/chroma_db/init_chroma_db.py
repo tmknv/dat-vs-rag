@@ -70,3 +70,4 @@ def load_chroma_db(lexical_collection, semantic_collection):
     )
 
     print("Chroma db loaded!")
+

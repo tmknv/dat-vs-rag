@@ -20,8 +20,6 @@ def DAT_SLM_response(query: str) ->str:
     '''
 
     context = get_DAT_context(query)
-
-    print("Query:", query, "\nContext: ", context)
     
     request_with_context = f"""
         You are a helpful assistant that answers questions based ONLY on the provided contexts.
