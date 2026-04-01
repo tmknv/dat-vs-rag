@@ -1,11 +1,12 @@
 '''
 Файл для разбивания датасета на чанки
 '''
-
-from .BM25 import train_bm25, genetate_sparse_vectors
+from .making_NQjsonl import load_NQjsonl
+from .BM25 import genetate_sparse_vectors
 from .ModernBert import generate_embeddings 
 from chonkie import TokenChunker
 import json
+import os
 
 
 chunker = TokenChunker(
@@ -15,6 +16,10 @@ chunker = TokenChunker(
 )
 
 def load_local_nq(path: str, limit: int = 1000) -> list[dict]:
+
+    if not os.path.exists("./dat_vs_rag/chroma_db/data/natural_questions_300.jsonl"):
+        load_NQjsonl()
+
     result = []
 
     with open(path, "r", encoding="utf-8") as f:
