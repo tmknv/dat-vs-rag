@@ -11,16 +11,6 @@ import numpy as np
 import os
 
 
-
-'''Глобальная обученая модель bm25'''
-BM25 = None
-
-'''
-Глобальный словарь с индексами BM25 их местами в разреженом векторе
-индексы - ключи, значения - место в векторе    
-'''
-KEYS = {} 
-
 #докстринги не в гугл формате, но это уже в несколько раз лучше чем у лехи с савой
 def generate_query_sparse_vector(query: str) ->list[float]:
 
@@ -33,16 +23,13 @@ def generate_query_sparse_vector(query: str) ->list[float]:
         Разреженый вектор запроса
     '''
 
-    #если модель не загружена - загружаем
-    global BM25
-    global KEYS
-    if BM25 is None:
-        BM25 = BM25Encoder()
-        BM25.load("./dat_vs_rag/chroma_db/data/bm25_param.json")
-    if len(KEYS)==0:
-        keys = list(BM25.doc_freq.keys())
-        for i in range(len(keys)):
-            KEYS[keys[i]] = i
+    BM25 = BM25Encoder()
+    BM25.load("./dat_vs_rag/chroma_db/data/bm25_param.json")
+
+    KEYS = {}
+    keys = list(BM25.doc_freq.keys())
+    for i in range(len(keys)):
+        KEYS[keys[i]] = i
 
 
     indices_values = BM25.encode_queries(query)
@@ -70,18 +57,14 @@ def genetate_sparse_vectors(documents: list[str]) -> list[float]:
         Список разреженых векторов каждого документа
     '''
 
-    #если модель не загружена - загружаем   
-    global BM25
-    global KEYS
-    if BM25 is None:
-        BM25 = BM25Encoder()
-        BM25.load("./dat_vs_rag/chroma_db/data/bm25_param.json")
-    if len(KEYS)==0:
-        keys = list(BM25.doc_freq.keys())
-        for i in range(len(keys)):
-            KEYS[keys[i]] = i
+    BM25 = BM25Encoder()
+    BM25.load("./dat_vs_rag/chroma_db/data/bm25_param.json")
     
-
+    KEYS = {}
+    keys = list(BM25.doc_freq.keys())
+    for i in range(len(keys)):
+        KEYS[keys[i]] = i
+    
 
     sparse_vectors = []
     
@@ -103,22 +86,14 @@ def train_bm25(documents: list[str]):
     Тренирует bm25 на документах
     '''
 
-    global BM25
-    global KEYS
-
     if os.path.exists("./dat_vs_rag/chroma_db/data/bm25_param.json"):
         return
 
     BM25 = BM25Encoder()
     BM25.fit(documents)
     BM25.dump("./dat_vs_rag/chroma_db/data/bm25_param.json")
-    
-    keys = list(BM25.doc_freq.keys())
-    for i in range(len(keys)):
-        KEYS[keys[i]] = i
 
     print("bm25 trained!")
-
 
 
 

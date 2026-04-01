@@ -13,16 +13,13 @@ from huggingface_hub import login
 load_dotenv()
 login(token=os.getenv("HF_TOKEN"))
 
-'''глобальная модель берта, чтобы при каждом запросе не подгружать'''
-BERT = None # вынести в config.yaml
+
 
 def generate_embeddings(documents: list[str]) ->list[list[int]]:
     
     '''
     инициализирует модель берт и создает эмбединги для документов
     '''
-
-    global BERT
 
     BERT = SentenceTransformer("nickprock/ModernBERT-base-sts")
 
@@ -39,18 +36,18 @@ def generate_query_embedding(query: str) ->list[int]:
     '''
     создает эмбединги для запросов
     '''
-
-    global BERT
-    if BERT is None:
-        BERT = SentenceTransformer("nickprock/ModernBERT-base-sts")
-
+    
+    BERT = SentenceTransformer("nickprock/ModernBERT-base-sts")
 
     return BERT.encode(
         [query],
         normalize_embeddings=True 
     )[0]
 
-def semantic_scores(query: str):
+
+
+
+def semantic_scores(query: str) ->dir:
     """
     Возвращает описание документов с косинусными расстояниями (скорами).
     """
@@ -69,7 +66,3 @@ def semantic_scores(query: str):
     
     return scores
 
-
-# print(len(generate_embeddings(["привет"])[0]))
-
-# print(len(generate_embeddings(["привет, как дела?"])[0]))
