@@ -64,3 +64,6 @@ __pycache__/
 # Windows
 Thumbs.db
 ehthumbs.db
+
+#data
+dat_vs_rag/chroma_db/data/
