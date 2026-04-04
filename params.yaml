@@ -1,0 +1,12 @@
+paths:
+  datasets:
+    datasets_path: ""
+    natural_questions_path: "./dat_vs_rag/chroma_db/data/natural_questions_300.jsonl"
+  chroma_db: 
+    chroma_db_path: "./dat_vs_rag/chroma_db/data"
+    chroma_sqlite_path: "./dat_vs_rag/chroma_db/data/chroma.sqlite3"
+  configs:
+    configs_path: ""
+    bm25_params_path: "./dat_vs_rag/chroma_db/data/bm25_param.json" 
+
+
