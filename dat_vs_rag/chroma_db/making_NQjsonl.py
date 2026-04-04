@@ -6,9 +6,14 @@
 import json
 from datasets import load_dataset
 
+from dat_vs_rag.utils.load_params import get_params
 
 
-def load_NQjsonl(OUTPUT_PATH="./dat_vs_rag/chroma_db/data/natural_questions_300.jsonl", LIMIT=300):
+PARAMS = get_params()
+
+
+
+def load_NQjsonl(OUTPUT_PATH=PARAMS["paths"]["datasets"]["natural_questions_path"], LIMIT=300):
     ds = load_dataset("natural_questions", split="train", streaming=True)
 
 

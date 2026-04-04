@@ -6,8 +6,12 @@
 import chromadb 
 import os
 
-from .create_chunks import get_chunks_with_embedding, get_dataset, get_chunks
-from .BM25 import train_bm25
+from dat_vs_rag.chroma_db.create_chunks import get_chunks_with_embedding, get_dataset, get_chunks
+from dat_vs_rag.chroma_db.BM25 import train_bm25
+from dat_vs_rag.utils.load_params import get_params
+
+
+PARAMS = get_params()
 
 
 def init_chroma_db():
@@ -19,10 +23,10 @@ def init_chroma_db():
 
 
     #проверка на наличие бд. если есть - выходим из функции
-    if os.path.exists("./dat_vs_rag/chroma_db/data/chroma.sqlite3"):
+    if os.path.exists(PARAMS["paths"]["chroma_db"]["chroma_sqlite_path"]):
         return
 
-    client = chromadb.PersistentClient(path="./dat_vs_rag/chroma_db/data")
+    client = chromadb.PersistentClient(path=PARAMS["paths"]["chroma_db"]["chroma_db_path"])
 
     #коллекция семантического поиска
     semantic_collection = client.create_collection(

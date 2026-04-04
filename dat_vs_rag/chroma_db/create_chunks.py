@@ -1,12 +1,17 @@
 '''
 Файл для разбивания датасета на чанки
 '''
-from .making_NQjsonl import load_NQjsonl
-from .BM25 import genetate_sparse_vectors
-from .ModernBert import generate_embeddings 
+from dat_vs_rag.chroma_db.making_NQjsonl import load_NQjsonl
+from dat_vs_rag.chroma_db.BM25 import genetate_sparse_vectors
+from dat_vs_rag.chroma_db.ModernBert import generate_embeddings 
+from dat_vs_rag.utils.load_params import get_params
+
 from chonkie import TokenChunker
 import json
 import os
+
+
+PARAMS = get_params()
 
 
 chunker = TokenChunker(
@@ -17,7 +22,7 @@ chunker = TokenChunker(
 
 def load_local_nq(path: str, limit: int = 1000) -> list[dict]:
 
-    if not os.path.exists("./dat_vs_rag/chroma_db/data/natural_questions_300.jsonl"):
+    if not os.path.exists(PARAMS["paths"]["datasets"]["natural_questions_path"]):
         load_NQjsonl()
 
     result = []
@@ -48,7 +53,7 @@ def get_dataset(dataset_name: str = "natural_questions", limit: int = 10) -> lis
     }
     '''
     if dataset_name == "natural_questions":
-        return load_local_nq("./dat_vs_rag/chroma_db/data/natural_questions_300.jsonl", limit)
+        return load_local_nq(PARAMS["paths"]["datasets"]["natural_questions_path"], limit)
 
     raise ValueError(f"Unsupported dataset: {dataset_name}")
 

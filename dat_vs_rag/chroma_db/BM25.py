@@ -7,8 +7,11 @@ from pinecone_text.sparse import BM25Encoder
 import chromadb 
 from scipy.special import expit
 import numpy as np
-
 import os
+
+from dat_vs_rag.utils.load_params import get_params
+
+PARAMS = get_params()
 
 
 #докстринги не в гугл формате, но это уже в несколько раз лучше чем у лехи с савой
@@ -24,7 +27,7 @@ def generate_query_sparse_vector(query: str) ->list[float]:
     '''
 
     BM25 = BM25Encoder()
-    BM25.load("./dat_vs_rag/chroma_db/data/bm25_param.json")
+    BM25.load(PARAMS["paths"]["configs"]["bm25_params_path"])
 
     KEYS = {}
     keys = list(BM25.doc_freq.keys())
@@ -58,7 +61,7 @@ def genetate_sparse_vectors(documents: list[str]) -> list[float]:
     '''
 
     BM25 = BM25Encoder()
-    BM25.load("./dat_vs_rag/chroma_db/data/bm25_param.json")
+    BM25.load(PARAMS["paths"]["configs"]["bm25_params_path"])
     
     KEYS = {}
     keys = list(BM25.doc_freq.keys())
@@ -86,12 +89,12 @@ def train_bm25(documents: list[str]):
     Тренирует bm25 на документах
     '''
 
-    if os.path.exists("./dat_vs_rag/chroma_db/data/bm25_param.json"):
+    if os.path.exists(PARAMS["paths"]["configs"]["bm25_params_path"]):
         return
 
     BM25 = BM25Encoder()
     BM25.fit(documents)
-    BM25.dump("./dat_vs_rag/chroma_db/data/bm25_param.json")
+    BM25.dump(PARAMS["paths"]["configs"]["bm25_params_path"])
 
     print("bm25 trained!")
 
@@ -128,7 +131,7 @@ def get_BM25_scores(query: str) -> dict[str, float]:
         Score змежду запросом и каждым документом
     '''
 
-    client = chromadb.PersistentClient(path="./dat_vs_rag/chroma_db/data")
+    client = chromadb.PersistentClient(path=PARAMS["paths"]["chroma_db"]["chroma_db_path"])
     collection = client.get_collection(name="lexical_collection")
     data = collection.get(include=["documents", "embeddings"])
 

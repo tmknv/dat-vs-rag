@@ -10,6 +10,10 @@ from dotenv import load_dotenv
 import os
 from huggingface_hub import login
 
+from dat_vs_rag.utils.load_params import get_params
+
+PARAMS = get_params()
+
 load_dotenv()
 login(token=os.getenv("HF_TOKEN"))
 
@@ -47,11 +51,11 @@ def generate_query_embedding(query: str) ->list[int]:
 
 
 
-def semantic_scores(query: str) ->dir:
+def semantic_scores(query: str) ->dict:
     """
     Возвращает описание документов с косинусными расстояниями (скорами).
     """
-    client = chromadb.PersistentClient(path="./dat_vs_rag/chroma_db/data")
+    client = chromadb.PersistentClient(path=PARAMS["paths"]["chroma_db"]["chroma_db_path"])
     collection = client.get_collection("semantic_collection")
     
     query_emb = generate_query_embedding(query)
