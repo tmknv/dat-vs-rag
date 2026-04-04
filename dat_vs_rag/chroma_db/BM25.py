@@ -27,7 +27,7 @@ def generate_query_sparse_vector(query: str) ->list[float]:
     '''
 
     BM25 = BM25Encoder()
-    BM25.load(PARAMS["paths"]["configs"]["bm25_params_path"])
+    BM25.load(PARAMS["paths"]["models"]["bm25_params_path"])
 
     KEYS = {}
     keys = list(BM25.doc_freq.keys())
@@ -61,7 +61,7 @@ def genetate_sparse_vectors(documents: list[str]) -> list[float]:
     '''
 
     BM25 = BM25Encoder()
-    BM25.load(PARAMS["paths"]["configs"]["bm25_params_path"])
+    BM25.load(PARAMS["paths"]["models"]["bm25_params_path"])
     
     KEYS = {}
     keys = list(BM25.doc_freq.keys())
@@ -89,12 +89,12 @@ def train_bm25(documents: list[str]):
     Тренирует bm25 на документах
     '''
 
-    if os.path.exists(PARAMS["paths"]["configs"]["bm25_params_path"]):
+    if os.path.exists(PARAMS["paths"]["models"]["bm25_params_path"]):
         return
 
     BM25 = BM25Encoder()
     BM25.fit(documents)
-    BM25.dump(PARAMS["paths"]["configs"]["bm25_params_path"])
+    BM25.dump(PARAMS["paths"]["models"]["bm25_params_path"])
 
     print("bm25 trained!")
 

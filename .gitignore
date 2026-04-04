@@ -65,5 +65,5 @@ __pycache__/
 Thumbs.db
 ehthumbs.db
 
-#data
-dat_vs_rag/chroma_db/data/
+#artifacts
+dat_vs_rag/artifacts
