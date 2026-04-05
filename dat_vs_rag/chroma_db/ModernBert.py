@@ -8,14 +8,30 @@ import chromadb
 import numpy as np
 from dotenv import load_dotenv
 import os
-from huggingface_hub import login
 
 from dat_vs_rag.utils.load_params import get_params
 
 PARAMS = get_params()
 
 load_dotenv()
-login(token=os.getenv("HF_TOKEN"))
+
+
+def load_model():
+    """Загружает ModernBERT через SentenceTransformer"""
+    save_path = PARAMS["paths"]["models"]["ModernBert_path"]
+    model_name = PARAMS["model"]["name"]
+    token = os.getenv("HF_TOKEN")
+
+    # SentenceTransformer умеет загружать из локальной папки
+    if os.path.exists(save_path) and os.listdir(save_path):
+        return 
+    os.makedirs(save_path, exist_ok=True)
+
+    model = SentenceTransformer(model_name_or_path=model_name, token=token)
+    # Сохраняем локально
+    model.save(save_path)
+    print(f"{model_name} loaded!")
+
 
 
 
@@ -25,7 +41,7 @@ def generate_embeddings(documents: list[str]) ->list[list[int]]:
     инициализирует модель берт и создает эмбединги для документов
     '''
 
-    BERT = SentenceTransformer("nickprock/ModernBERT-base-sts")
+    BERT = SentenceTransformer(PARAMS["paths"]["models"]["ModernBert_path"])
 
     doc_embeddings = BERT.encode(
         documents,
@@ -41,7 +57,7 @@ def generate_query_embedding(query: str) ->list[int]:
     создает эмбединги для запросов
     '''
     
-    BERT = SentenceTransformer("nickprock/ModernBERT-base-sts")
+    BERT = SentenceTransformer(PARAMS["paths"]["models"]["ModernBert_path"])
 
     return BERT.encode(
         [query],

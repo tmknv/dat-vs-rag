@@ -52,6 +52,9 @@ def get_dataset(dataset_name: str = "natural_questions", limit: int = 10) -> lis
         "text": "..."
     }
     '''
+
+    os.makedirs(PARAMS["paths"]["datasets"]["datasets_path"], exist_ok=True)
+
     if dataset_name == "natural_questions":
         return load_local_nq(PARAMS["paths"]["datasets"]["natural_questions_path"], limit)
 

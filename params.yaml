@@ -8,7 +8,7 @@ paths:
   models:
     models_path: "./dat_vs_rag/artifacts/models"
     bm25_params_path: "./dat_vs_rag/artifacts/models/bm25_param.json"
-    ModernBert_path:  "./dat_vs_rag/artifacts/models/ModernBert.json"
+    ModernBert_path:  "./dat_vs_rag/artifacts/models/ModernBert"
 
 
 model:

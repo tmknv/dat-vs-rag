@@ -8,6 +8,7 @@ import os
 
 from dat_vs_rag.chroma_db.create_chunks import get_chunks_with_embedding, get_dataset, get_chunks
 from dat_vs_rag.chroma_db.BM25 import train_bm25
+from dat_vs_rag.chroma_db.ModernBert import load_model
 from dat_vs_rag.utils.load_params import get_params
 
 
@@ -21,12 +22,16 @@ def init_chroma_db():
     создает клиент и две коллекции - для лексического и семантического поисков
     '''
 
-
     #проверка на наличие бд. если есть - выходим из функции
     if os.path.exists(PARAMS["paths"]["chroma_db"]["chroma_sqlite_path"]):
         return
+    
+    chromadb_path = PARAMS["paths"]["chroma_db"]["chroma_db_path"]
+    os.makedirs(chromadb_path, exist_ok=True)
 
-    client = chromadb.PersistentClient(path=PARAMS["paths"]["chroma_db"]["chroma_db_path"])
+
+
+    client = chromadb.PersistentClient(path=chromadb_path)
 
     #коллекция семантического поиска
     semantic_collection = client.create_collection(
@@ -58,6 +63,7 @@ def load_chroma_db(lexical_collection, semantic_collection):
         chunks = get_chunks(sample)
         total_chunks += chunks
 
+    load_model()
     train_bm25(total_chunks)
 
     total_chunks_with_embedings = get_chunks_with_embedding(total_chunks)
