@@ -16,7 +16,7 @@ PARAMS = get_params()
 
 chunker = TokenChunker(
     tokenizer="answerdotai/ModernBERT-base",
-    chunk_size=128, 
+    chunk_size=256, 
     chunk_overlap=20
 )
 
@@ -62,13 +62,12 @@ def get_dataset(dataset_name: str = "natural_questions", limit: int = 10) -> lis
 
 
 def get_chunks(sample: dict) -> list[str]:
-    question = sample["question"]
     text = sample["text"]
 
     context_chunks = chunker.chunk(text)
 
     return [
-        f"{question}\n{chunk.text}"
+        chunk.text
         for chunk in context_chunks
     ]
 
