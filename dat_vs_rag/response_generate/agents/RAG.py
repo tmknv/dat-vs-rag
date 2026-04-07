@@ -56,7 +56,7 @@ def get_top3_docs(scores: dict[str, float]) ->list[str]:
     
     return [list(top.keys())[0] for top in top3]
 
-def get_RAG_context(query: str) ->list[str]:
+def get_RAG_context(query: str, retriever_type: str, alpha_coefficient: float) ->list[str]:
 
     '''возвращает контекст по запросу
 
@@ -67,8 +67,16 @@ def get_RAG_context(query: str) ->list[str]:
         контекст, найденный алгоритмом DAT
     '''
 
-    docs_with_hibrid_score = get_hibrid_scores(query, alpha=0.5)
+    match retriever_type:
+        case "hybrid":
+            docs_with_score = get_hibrid_scores(query, alpha=alpha_coefficient)
+        case "lexical":
+            docs_with_score = get_BM25_scores(query)
+        case "semantic":
+            docs_with_score = semantic_scores(query)
+        case _:
+            return []
 
-    top3 = get_top3_docs(docs_with_hibrid_score)
+    top3 = get_top3_docs(docs_with_score)
 
     return top3

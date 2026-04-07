@@ -178,14 +178,15 @@ def get_top3_docs(scores: dict[str, float]) ->list[str]:
 
 def get_DAT_context(query: str) ->list[str]:
 
-    '''возвращает контекст по запросу
+    """
+    возвращает контекст по запросу
 
-    Аргументы:
+    Args:
         Запрос пользователя
     
-    Возвращает:
+    Returns:
         контекст, найденный алгоритмом DAT
-    '''
+    """
 
     docs_with_hibrid_score = get_hibrid_scores(query)
 

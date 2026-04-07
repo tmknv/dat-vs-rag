@@ -8,7 +8,7 @@ from .models import Gemma_3_27B
 
 
 
-def RAG_LLM_response(query: str) ->str:
+def RAG_LLM_response(query: str, retriever_type: str, alpha_coefficient: float) ->str:
   
     '''генерирует ответ LLM на основе запроса и контекста, найденного алгоритмом RAG
 
@@ -19,7 +19,7 @@ def RAG_LLM_response(query: str) ->str:
         Ответ модели
     '''
 
-    context = get_RAG_context(query)
+    context = get_RAG_context(query, retriever_type, alpha_coefficient)
     
     request_with_context = f"""
         You are a helpful assistant that answers questions based ONLY on the provided contexts.

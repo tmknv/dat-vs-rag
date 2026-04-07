@@ -9,10 +9,13 @@ router = Router()
 
 @router.message(CommandStart())
 async def command_start(msg: Message):
+    """
+    ответ на команду /start
+    """
     add_user(msg.from_user.id, msg.from_user.username)
     await msg.answer("Hello!")
 
 
 @router.message(F.text)
 async def generate_answer(msg: Message):
-    await msg.answer(get_responses(msg.text))
+    await msg.answer(get_responses(msg.text, retriever_type="lexical", alpha_coefficient=0.5))
