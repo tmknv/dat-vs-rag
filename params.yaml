@@ -14,3 +14,6 @@ paths:
 model:
   name: "nickprock/ModernBERT-base-sts"
 
+
+generation:
+  RAG_retriever_types: [hybrid, lexical, semantic]
