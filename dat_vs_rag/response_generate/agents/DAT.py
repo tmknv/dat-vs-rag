@@ -6,9 +6,13 @@
 
 from dat_vs_rag.chroma_db.BM25 import get_BM25_scores
 from dat_vs_rag.chroma_db.ModernBert import semantic_scores
+from dat_vs_rag.utils.logger import setup_logging
+from dat_vs_rag.utils.logger import get_logger
 
 from .models import Gemma_3_4B
 
+setup_logging()
+logger = get_logger(__name__)
 
 def generate_grades(query: str, top1_lex: str, top1_sem: str) ->dict[str, int]:
 
@@ -67,13 +71,15 @@ def generate_grades(query: str, top1_lex: str, top1_sem: str) ->dict[str, int]:
     )
 
     if len(str_grades)>7:
-        print("no grades")
+        logger.error("no grades")
         return {
         "sem": 0,
         "lex": 0
     }
 
     grades = str_grades.split(" ")
+
+    logger.info(f"DAT alpha grades: sem {grades[0]}, lex {grades[1]}")
 
     return {
         "sem": int(grades[0]),
@@ -121,6 +127,8 @@ def generate_alpha_coef(query:str, lex_scores: dict[str, float], sem_scores: dic
 
     grades = generate_grades(query, top1_lex, top1_sem)
     alpha = calculate_alpha(grades)
+
+    logger.info(f"DAT alpha: {alpha}")
 
     return alpha
 
@@ -191,6 +199,8 @@ def get_DAT_context(query: str) ->list[str]:
     docs_with_hibrid_score = get_hibrid_scores(query)
 
     top3 = get_top3_docs(docs_with_hibrid_score)
+
+    logger.info(f"DAT context: {top3}")
 
     return top3
 

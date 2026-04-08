@@ -5,6 +5,11 @@
 
 from dat_vs_rag.chroma_db.BM25 import get_BM25_scores
 from dat_vs_rag.chroma_db.ModernBert import semantic_scores
+from dat_vs_rag.utils.logger import setup_logging
+from dat_vs_rag.utils.logger import get_logger
+
+setup_logging()
+logger = get_logger(__name__)
 
 
 def get_hibrid_scores(query: str, alpha: float) ->dict:
@@ -78,5 +83,7 @@ def get_RAG_context(query: str, retriever_type: str, alpha_coefficient: float) -
             return []
 
     top3 = get_top3_docs(docs_with_score)
+
+    logger.info(f"RAG context: {top3}")
 
     return top3
