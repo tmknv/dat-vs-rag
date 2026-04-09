@@ -11,7 +11,10 @@ import os
 load_dotenv()
 
 # api_key = os.getenv("OPENROUTER_API_KEY")
-SLM_SERVER_URL = "http://89.169.162.154:8080"
+
+# ip всегда разный (яндекс меняет его при каждом новом запуске сервака), вводим вручную каждый раз
+SLM_SERVER_URL = "http://111.88.153.175:8081"
+LLM_SERVER_URL = "http://111.88.153.175:8082"
 
 def Gemma_3_4B(query: str, max_retries: int = 3) -> str:
   
@@ -96,7 +99,7 @@ def Gemma_3_27B(query: str, max_retries: int = 3) -> str:
     for attempt in range(max_retries):
         try:
             response = requests.post(
-                url=f"{SLM_SERVER_URL}/completion",
+                url=f"{LLM_SERVER_URL}/completion",
                 headers={"Content-Type": "application/json"},
                 json=payload,
                 timeout=60  
