@@ -20,10 +20,10 @@ chunker = TokenChunker(
     chunk_overlap=20
 )
 
-def load_local_nq(path: str, limit: int = 1000) -> list[dict]:
+def load_local_nq(path: str, limit: int = 10) -> list[dict]:
 
     if not os.path.exists(PARAMS["paths"]["datasets"]["natural_questions_path"]):
-        load_NQjsonl()
+        load_NQjsonl(OUTPUT_PATH=PARAMS["paths"]["datasets"]["natural_questions_path"], LIMIT = limit)
 
     result = []
 

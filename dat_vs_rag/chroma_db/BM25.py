@@ -149,7 +149,7 @@ def get_BM25_scores(query: str) -> dict[str, float]:
     scores_with_docs = {}
 
     for i in range(len(doc_vectors)):
-        scores_with_docs[documents[i]] = expit((scores[i] - mean)/std)
+        scores_with_docs[documents[i]] = expit((scores[i] - mean)/std)*2
 
     return scores_with_docs
 

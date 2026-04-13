@@ -13,7 +13,7 @@ PARAMS = get_params()
 
 
 
-def load_NQjsonl(OUTPUT_PATH=PARAMS["paths"]["datasets"]["natural_questions_path"], LIMIT=300):
+def load_NQjsonl(OUTPUT_PATH=PARAMS["paths"]["datasets"]["natural_questions_path"], LIMIT=1000):
     ds = load_dataset("natural_questions", split="train", streaming=True)
 
 

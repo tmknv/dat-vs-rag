@@ -1,7 +1,7 @@
 paths:
   datasets:
     datasets_path: "./dat_vs_rag/artifacts/datasets"
-    natural_questions_path: "./dat_vs_rag/artifacts/datasets/natural_questions_300.jsonl"
+    natural_questions_path: "./dat_vs_rag/artifacts/datasets/natural_questions_1000.jsonl"
   chroma_db: 
     chroma_db_path: "./dat_vs_rag/artifacts/chroma_db"
     chroma_sqlite_path: "./dat_vs_rag/artifacts/chroma_db/chroma.sqlite3"

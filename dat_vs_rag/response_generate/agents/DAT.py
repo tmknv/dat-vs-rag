@@ -25,8 +25,7 @@ def generate_grades(query: str, top1_lex: str, top1_sem: str) ->dict[str, int]:
         Оценку релевантности лексического и семанического поисков
     '''
 
-    str_grades = Gemma_3_4B(
-       f"""
+    request = f"""
         You are an evaluator assessing the retrieval effectiveness of dense retrieval 
         ( Cosine Distance ) and BM25 retrieval for finding the correct answer .
 
@@ -68,7 +67,12 @@ def generate_grades(query: str, top1_lex: str, top1_sem: str) ->dict[str, int]:
         ( Vector : 3 , BM25 : 4)
         ** Do not output any other text .**
         """
+
+    str_grades = Gemma_3_4B(
+       request
     )
+    
+    print(str_grades)
 
     if len(str_grades)>7:
         logger.error("no grades")
@@ -126,6 +130,7 @@ def generate_alpha_coef(query:str, lex_scores: dict[str, float], sem_scores: dic
     top1_sem = next((doc for doc in sem_scores if sem_scores[doc] == max_sem_score))
 
     grades = generate_grades(query, top1_lex, top1_sem)
+    
     alpha = calculate_alpha(grades)
 
     logger.info(f"DAT alpha: {alpha}")
@@ -200,7 +205,7 @@ def get_DAT_context(query: str) ->list[str]:
 
     top3 = get_top3_docs(docs_with_hibrid_score)
 
-    logger.info(f"DAT context: {top3}")
+    logger.info(f"DAT context: {top3}\n\n")
 
     return top3
 

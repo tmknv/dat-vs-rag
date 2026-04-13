@@ -10,11 +10,8 @@ import os
 
 load_dotenv()
 
-# api_key = os.getenv("OPENROUTER_API_KEY")
+api_key = os.getenv("OPENROUTER_API_KEY")
 
-# ip всегда разный (яндекс меняет его при каждом новом запуске сервака), вводим вручную каждый раз
-SLM_SERVER_URL = "http://111.88.153.175:8081"
-LLM_SERVER_URL = "http://111.88.153.175:8082"
 
 def Gemma_3_4B(query: str, max_retries: int = 3) -> str:
   
@@ -27,32 +24,32 @@ def Gemma_3_4B(query: str, max_retries: int = 3) -> str:
         Ответ модели
     '''
         
-    # headers = {
-    #     "Authorization": f"Bearer {api_key}",
-    #     "Content-Type": "application/json",
-    #     "HTTP-Referer": "https://t.me/your_bot",
-    #     "X-Title": "DAT-vs-RAG Bot",
-    # }
-
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://t.me/your_bot",
+        "X-Title": "DAT-vs-RAG Bot",
+    }
+    
     payload = {
-        "prompt": query,
-        "temperature": 0.7,
-        "max_tokens": 50,
+        "model": "google/gemma-3-4b-it:free",
+        "messages": [{"role": "user", "content": query}]
     }
     
     for attempt in range(max_retries):
         try:
             response = requests.post(
-                url=f"{SLM_SERVER_URL}/completion",
-                headers={"Content-Type": "application/json"},
-                json=payload,
-                timeout=60  
+                url="https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                data=json.dumps(payload),
+                timeout=30
             )
             
             result = response.json()
 
+            # Если есть 'choices', возвращаем ответ
             if 'error' not in result and result:
-                return result['content']
+                return result['choices'][0]['message']['content']
             
             # Если ошибка, пробуем снова
             print(f"SLM:Attempt {attempt + 1} failed, error: {result['error']['message']}, retrying...")
@@ -77,39 +74,32 @@ def Gemma_3_27B(query: str, max_retries: int = 3) -> str:
         Ответ модели
     '''
         
-    # headers = {
-    #     "Authorization": f"Bearer {api_key}",
-    #     "Content-Type": "application/json",
-    #     "HTTP-Referer": "https://t.me/your_bot",
-    #     "X-Title": "DAT-vs-RAG Bot",
-    # }
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://t.me/your_bot",
+        "X-Title": "DAT-vs-RAG Bot",
+    }
     
-    # payload = {
-    #     "model": "google/gemma-3-27b-it:free",
-    #     "messages": [{"role": "user", "content": query}]
-    # }
-
     payload = {
-        "prompt": query,
-        "temperature": 0.7,
-        "max_tokens": 50,
-        "stop": ["\n\nВопрос:", "\n\nUser:"]
+        "model": "google/gemma-3-27b-it:free",
+        "messages": [{"role": "user", "content": query}]
     }
     
     for attempt in range(max_retries):
         try:
             response = requests.post(
-                url=f"{LLM_SERVER_URL}/completion",
-                headers={"Content-Type": "application/json"},
-                json=payload,
-                timeout=60  
+                url="https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                data=json.dumps(payload),
+                timeout=30
             )
             
             result = response.json()
             
-            
+            # Если есть 'choices', возвращаем ответ
             if 'error' not in result and result:
-                return result['content']
+                return result['choices'][0]['message']['content']
             
             # Если ошибка, пробуем снова
             print(f"LLM: Attempt {attempt + 1} failed, error: {result['error']['message']}, retrying...")

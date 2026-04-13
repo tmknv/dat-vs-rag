@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from aiogram.types import ReplyKeyboardRemove
 
-from dat_vs_rag.SQL_DB.users import add_user
+# from dat_vs_rag.SQL_DB.users import add_user
 from dat_vs_rag.response_generate.generation import get_responses 
 import dat_vs_rag.telegram_bot.keyboards as kb
 
@@ -28,7 +28,7 @@ async def command_start(msg: Message, state: FSMContext):
     
     await state.set_state(Form_response_generate.query)
   
-    add_user(msg.from_user.id, msg.from_user.username)
+    # add_user(msg.from_user.id, msg.from_user.username)
 
     await msg.answer("Hello!")
 
