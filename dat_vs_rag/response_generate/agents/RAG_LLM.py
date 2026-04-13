@@ -35,7 +35,7 @@ def RAG_LLM_response(query: str, retriever_type: str, alpha_coefficient: float) 
         - Answer ONLY using information from the contexts above
         - If the answer cannot be found in the contexts, say "I don't have enough information to answer this question"
         - Do not use your own knowledge or external information
-        - Be direct
+        - Be concise and direct
         - If the contexts conflict, explain the discrepancy
 
         Answer:
