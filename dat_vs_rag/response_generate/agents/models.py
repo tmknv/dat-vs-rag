@@ -32,7 +32,7 @@ def Gemma_3_4B(query: str, max_retries: int = 3) -> str:
     }
     
     payload = {
-        "model": "google/gemma-3-4b-it:free",
+        "model": "mistralai/ministral-3b-2512",
         "messages": [{"role": "user", "content": query}]
     }
     
@@ -82,7 +82,7 @@ def Gemma_3_27B(query: str, max_retries: int = 3) -> str:
     }
     
     payload = {
-        "model": "google/gemma-3-27b-it:free",
+        "model": "mistralai/ministral-14b-2512",
         "messages": [{"role": "user", "content": query}]
     }
     
