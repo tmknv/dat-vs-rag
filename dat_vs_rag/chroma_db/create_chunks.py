@@ -16,7 +16,7 @@ PARAMS = get_params()
 
 chunker = TokenChunker(
     tokenizer="answerdotai/ModernBERT-base",
-    chunk_size=256, 
+    chunk_size=512, 
     chunk_overlap=20
 )
 

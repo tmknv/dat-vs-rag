@@ -20,20 +20,19 @@ def get_responses(query: str, RAG_retriever_type: str, alpha_coefficient: float)
     DAT_time = 0
     RAG_time = 0
 
-    start = time.time()
+    dstart = time.time()
     DAT_response = DAT_SLM_response(processed_query)
-    end = time.time()
-    DAT_time = end-start
+    dend = time.time()
+    DAT_time = dend-dstart
 
-    start = time.time()
     RAG_response = RAG_LLM_response(processed_query, RAG_retriever_type, alpha_coefficient)
     end = time.time()
-    RAG_time = end - start
+    RAG_time = end - dend
 
     logger.info(f"DAT SLM response:\n{DAT_response}\nTIME: {DAT_time} seconds\n")
     logger.info(f"RAG LLM response:\n{RAG_response}\nTIME: {RAG_time} seconds\n")
 
-    total_response = f"**DAT SLM response:**\n{DAT_response}\n\n**{RAG_retriever_type} RAG LLM response:**\n{RAG_response}"
+    total_response = f"<b>DAT SLM response:</b>\n{DAT_response}\n\n<b>{RAG_retriever_type} RAG LLM response:</b>\n{RAG_response}"
 
     return total_response
     

@@ -37,7 +37,10 @@ def DAT_SLM_response(query: str) ->str:
         - Do not use your own knowledge or external information
         - Be concise and direct
         - If the contexts conflict, explain the discrepancy
-
+        - Don't write phrases like "based on context n", "contexts include" and such. Write as if you're relying on your own knowledge.
+        - Do not use any markdown formatting
+        - Use ONLY plain text
+        - Don not answer more than 100 words. If the answer is longer - make it shorter, but keep all the important information."
         Answer:
     """
 

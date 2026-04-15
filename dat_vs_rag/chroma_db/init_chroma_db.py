@@ -56,7 +56,7 @@ def load_chroma_db(lexical_collection, semantic_collection):
     '''
 
 
-    DATASET = get_dataset(dataset_name="natural_questions", limit=10)
+    DATASET = get_dataset(dataset_name="natural_questions", limit=65)
 
     total_chunks = []
     for sample in DATASET:
